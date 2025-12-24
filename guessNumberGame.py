@@ -18,7 +18,7 @@ while True:
         print(f"Congratulations! You guessed in {count} tries!")
         break
     elif guess > x:
-        print("Too high!")
+        print("Thats Too high!")
     else:
         print("Too low!")
 
