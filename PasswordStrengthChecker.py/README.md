@@ -35,23 +35,18 @@ Your password is strong!
 ## 🔍 Code Structure
 ```
 while True:
-```
+
 ```
     1. Check length < 8 → "Too short"
-```
-```
+
     2. Check NO uppercase → "Need uppercase"
-```
-```
+
     3. Check NO lowercase → "Need lowercase"
-```
-```
+
     4. Check NO digits → "Need number"
-```
-```
+
     5. Check ALL alphanumeric/space → "Need special char"
-```
-```
+
     6. ELSE → "Strong!" + break
 ```
 
