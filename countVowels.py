@@ -1,4 +1,4 @@
-userInput=input("Enter a string to count vowels : ").upper()
+userInput=input("Enter a string to count vowels : ")
 
 if(userInput=="" ):
     print("Please enter a valid string")
