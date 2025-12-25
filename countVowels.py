@@ -4,7 +4,7 @@ if(userInput=="" ):
     print("Please enter a valid string")
 
 else:
-    vowels='AEIOU'
+    vowels='AEIOUaeiou'
     count=0
     for i in userInput:
         if i in vowels:
