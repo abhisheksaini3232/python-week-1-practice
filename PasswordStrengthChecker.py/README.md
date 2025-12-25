@@ -2,9 +2,11 @@
 # 🔐 Password Strength Checker
 
 ## Overview
+
 A Python program that evaluates password strength based on common security requirements. Continuously prompts user until a strong password is entered.
 
 ## ✨ Features
+
 - Minimum 8 characters length check
 - At least 1 uppercase letter (A-Z)
 - At least 1 lowercase letter (a-z)
@@ -15,6 +17,7 @@ A Python program that evaluates password strength based on common security requi
 
 ## 🚀 Usage
 ```
+
 Enter your password to check its strength: abc123
 Password should contain at least one uppercase letter.
 
@@ -23,6 +26,7 @@ Password should contain at least one special character.
 
 Enter your password to check its strength: Abc123!
 Your password is strong!
+
 ```
 
 ## 🧠 Concepts Used
@@ -34,6 +38,7 @@ Your password is strong!
 
 ## 🔍 Code Structure
 ```
+
 while True:
 
 ```
@@ -51,6 +56,7 @@ while True:
 ```
 
 ## ❌ Error Messages (Priority Order)
+
 1. **Length** < 8 chars
 2. **No uppercase** letters
 3. **No lowercase** letters
@@ -59,9 +65,9 @@ while True:
 6. ✅ **Strong password**
 
 ## ✅ Requirements Met
+
 - [x] Strings & string methods
 - [x] Multiple conditions (`if/elif`)
 - [x] Loop control (`while True`, `break`)
 - [x] Input validation
 - [x] Clean, readable code
-
