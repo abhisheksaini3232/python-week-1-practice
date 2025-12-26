@@ -10,19 +10,26 @@ def delete():
   print(todoList)
 
 
-while true:
-  option=int(input("Enter the options to add or delete(1->add,2->delete): "))  
+
+  
+option=int(input("Enter the options to add or delete(1->add,\n2->delete,\n3->List completed:"): ")
+a=0
+while(a=0): 
   if(option==1):
-    add()
+        add()
   elif(option==1):
-    delete()  
+        delete()  
   else:
-    print("Enter from the given options")
-    continue
+      print("The value entered was not appropriate") 
 
 
 
-
+      
+  
     
+
+
+
+      
 
 
