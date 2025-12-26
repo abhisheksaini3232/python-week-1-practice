@@ -6,21 +6,47 @@ def add():
 
 def delete():
   x=input("Enter the task you want to delete from the list: ")
-  todoList.delete(x)
+  todoList.remove(x)
   print(todoList)
 
+def modify():
+   x=input("Enter the task you want to modify: ")
+   y=input("Enter the new task : ")
+
+   i=todoList.index(x)
+     
+   todoList[i]=y
+   print(todoList)
 
 
-  
-option=int(input("Enter the options to add or delete(1->add,\n2->delete,\n3->List completed:"): ")
-a=0
-while(a=0): 
-  if(option==1):
+while True:
+  try: 
+      option = int(input("1->Add,2->Delete,3->Modify,4->To see tasks,5->Exit\n Enter the value:\n "))
+      if(option==1):
         add()
-  elif(option==1):
+      elif(option==2):
         delete()  
-  else:
-      print("The value entered was not appropriate") 
+      elif(option==5):
+         print("Final todo list is ",todoList)
+         break
+      elif(option==3):
+         modify()
+      elif(option==4):
+         print(todoList)   
+      else:
+        print("The value entered was not appropriate")              
+  except ValueError:
+      print("You should check the correctness of input")
+                  
+
+# a=0
+# while(a=0): 
+  # if(option==1):
+  #       add()
+  # elif(option==1):
+  #       delete()  
+  # else:
+  #     print("The value entered was not appropriate") 
 
 
 
