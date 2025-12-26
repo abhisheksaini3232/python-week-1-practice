@@ -11,14 +11,19 @@ def delete():
 
 def modify():
    x=input("Enter the task you want to modify: ")
-   y=input("Enter the new task : ")
+   if(x in todoList):
+      y=input("Enter the new task : ")
 
-   i=todoList.index(x)
-     
-   todoList[i]=y
-   print(todoList)
+      i=todoList.index(x)
+      
+      todoList[i]=y
+      print(todoList)
+   else:
+      print("The input doesnt match any task in the todo list")
 
+  
 
+add()
 while True:
   try: 
       option = int(input("1->Add,2->Delete,3->Modify,4->To see tasks,5->Exit\n Enter the value:\n "))
@@ -30,7 +35,11 @@ while True:
          print("Final todo list is ",todoList)
          break
       elif(option==3):
-         modify()
+         if(len(todoList)>0):
+          modify()
+         else:
+            print("You dont have anything in the todoList to modify")
+          
       elif(option==4):
          print(todoList)   
       else:
