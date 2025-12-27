@@ -1,31 +1,105 @@
 import pymongo
 
-# Your Atlas connection string
+# Your connection
 connectionString = "mongodb+srv://manojsaini653733_db_user:7mUuKvsYRBkRICcF@cluster0.noljb9f.mongodb.net/?retryWrites=true&w=majority"
+client = pymongo.MongoClient(connectionString)
+db = client['projects']
+todos = db['todoList']
 
-if __name__ == '__main__':  # Correct condition for direct execution
-    client = pymongo.MongoClient(connectionString)
+# COMPLETE CRUD FUNCTIONS - SAME USE CASES AS PLAIN CODE
+def add_task(task_name):
+    """Add new task to todoTask array"""
+    todos.update_one({}, {'$push': {'todoTask': task_name}}, upsert=True)
+    print(f"✅ Added: '{task_name}'")
+
+def list_tasks():
+    """Show all tasks with numbers"""
+    tasks = get_all_tasks()
+    if not tasks:
+        print("📭 No tasks!")
+        return
+    print("\n📋 Your Tasks:")
+    for i, task in enumerate(tasks):
+        print(f"  {i+1}. {task}")
+
+def get_all_tasks():
+    """Get raw task list"""
+    doc = todos.find_one({}, {'todoTask': 1})
+    return doc['todoTask'] if doc and 'todoTask' in doc else []
+
+def update_task():
+    """Update task by number"""
+    tasks = get_all_tasks()
+    if not tasks:
+        print("📭 No tasks to update!")
+        return
     
+    list_tasks()
     try:
-        # Test connection
-        client.admin.command('ping')
-        print("✅ Connected to MongoDB Atlas!")
+        index = int(input("Enter task number to update: ")) - 1
+        if 0 <= index < len(tasks):
+            new_task = input("Enter new task name: ")
+            todos.update_one({}, {'$set': {f'todoTask.{index}': new_task}})
+            print("✅ Task updated!")
+        else:
+            print("❌ Invalid number!")
+    except:
+        print("❌ Invalid input!")
+
+def delete_task():
+    """Delete task by number"""
+    tasks = get_all_tasks()
+    if not tasks:
+        print("📭 No tasks to delete!")
+        return
+    
+    list_tasks()
+    try:
+        index = int(input("Enter task number to delete: ")) - 1
+        if 0 <= index < len(tasks):
+            task_name = tasks[index]
+            todos.update_one({}, {'$pull': {'todoTask': task_name}})
+            print("✅ Task deleted!")
+        else:
+            print("❌ Invalid number!")
+    except:
+        print("❌ Invalid input!")
+
+def clear_all():
+    """Delete all tasks"""
+    todos.update_one({}, {'$set': {'todoTask': []}})
+    print("🗑️ All tasks cleared!")
+
+# MAIN MENU (same as your plain code)
+def main_menu():
+    while True:
+        print("\n🚀 TODO APP (MongoDB)")
+        print("1. Add task")
+        print("2. List tasks")
+        print("3. Update task")
+        print("4. Delete task")
+        print("5. Clear all")
+        print("0. Exit")
         
-        # YOUR DB: projects, YOUR Collection: todoList
-        db = client['projects']      # Database name
-        todos = db['todoList']       # Collection name
+        choice = input("Choose option: ")
         
-        # Insert test todo
-        todo_id = todos.insert_one({
-            "title": "Buy milk", 
-            "done": False, 
-            "created_at": "2025-12-27"
-        }).inserted_id
-        
-        print(f"✅ Inserted todo with ID: {todo_id}")
-        print(f"✅ Check your Atlas dashboard: projects.todoList")
-        
-    except Exception as e:
-        print(f"❌ Error: {e}")
-    finally:
-        client.close()
+        if choice == '1':
+            task = input("Enter task: ")
+            add_task(task)
+        elif choice == '2':
+            list_tasks()
+        elif choice == '3':
+            update_task()
+        elif choice == '4':
+            delete_task()
+        elif choice == '5':
+            clear_all()
+        elif choice == '0':
+            print("👋 Goodbye!")
+            break
+        else:
+            print("❌ Invalid option!")
+
+if __name__ == '__main__':
+    main_menu()
+    client.close()
