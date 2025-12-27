@@ -5,3 +5,5 @@
 # Search contact
 # Delete contact
 # Display all contacts
+
+phoneBook={}
