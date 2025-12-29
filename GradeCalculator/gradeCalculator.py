@@ -9,7 +9,7 @@
 
 def gradecalculate(marksList):
   total=sum(marksList)
-  Percentage=(total*100)/3
+  Percentage=(total*100)/300
   print(f"You have got {Percentage}% in exams")
   if(Percentage>90):
     grade="A"
@@ -26,4 +26,15 @@ def gradecalculate(marksList):
 
   print("You have got",grade,"grade in exam")      
 
-marks=int(input("Enter the marks of"))  
+marksList=[]
+while True:
+  try:
+      marks=int(input("Enter the marks of Mathematics:"))
+      marksList.append(marks)  
+      marks=int(input("Enter the marks of Science:")) 
+      marksList.append(marks)  
+      marks=int(input("Enter the marks of English: ")) 
+      marksList.append(marks)  
+      gradecalculate(marksList)
+  except ValueError:print("Enter a valid input")    
+
