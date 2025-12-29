@@ -24,7 +24,8 @@ def gradecalculate(marksList):
   elif(Percentage<40):
     grade="F"
 
-  print("You have got",grade,"grade in exam")      
+  print("You have got",grade,"grade in exam")
+
 
 marksList=[]
 while True:
@@ -36,5 +37,6 @@ while True:
       marks=int(input("Enter the marks of English: ")) 
       marksList.append(marks)  
       gradecalculate(marksList)
+      break
   except ValueError:print("Enter a valid input")    
 
