@@ -40,7 +40,6 @@ def deleteAllContact():
   contactDict.clear()
   print("All contacts got deleted")
 
-
 while True:
  try:
   option=int(input("1. Add contact \n2.Search contact \n3.Delete contact \n4.Display All \n5.Delete All \n6.Exit\n"))
