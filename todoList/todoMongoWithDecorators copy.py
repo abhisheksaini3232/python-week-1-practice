@@ -13,7 +13,7 @@ todos = db['todoList']
 #         func1()
 #         print("Ended execution")
 #     return calcTimeofExec  
-# 
+
 
 def decForTime(delay=0):  
     def decorator(func):  

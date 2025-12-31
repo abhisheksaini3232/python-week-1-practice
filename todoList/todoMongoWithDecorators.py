@@ -13,28 +13,31 @@ todos = db['todoList']
 #         func1()
 #         print("Ended execution")
 #     return calcTimeofExec  
-# 
 
 
-def decForTime(func):  
-    @wraps(func)
-    def calcTimeofExec(*args, **kwargs):  
-        start=time.perf_counter()
-        result = func(*args, **kwargs)  
-        end=time.perf_counter()
-        print(f"Time taken for execution of {func.__name__} {end-start}")
-        return result  
-    return calcTimeofExec
+def decForTime(delay=0):  
+    def decorator(func):  
+        @wraps(func)
+        def calcTimeofExec(*args, **kwargs):  
+            start=time.perf_counter()
+            if(delay>0):
+                time.sleep(delay)
+            result = func(*args, **kwargs)  
+            end=time.perf_counter()
+            print(f"Time taken for execution of {func.__name__} {end-start}")
+            return result  
+        return calcTimeofExec
+    return decorator
   
 
 # COMPLETE CRUD FUNCTIONS - SAME USE CASES AS PLAIN CODE
-@decForTime
+@decForTime(2)
 def add_task(task_name):
     """Add new task to todoTask array"""
     todos.update_one({}, {'$push': {'todoTask': task_name}}, upsert=True)
     print(f"✅ Added: '{task_name}'")
 
-@decForTime
+@decForTime(1)
 def list_tasks():
     """Show all tasks with numbers"""
     tasks = get_all_tasks()
@@ -45,13 +48,13 @@ def list_tasks():
     for i, task in enumerate(tasks):
         print(f"  {i+1}. {task}")
 
-@decForTime
+
 def get_all_tasks():
     """Get raw task list"""
     doc = todos.find_one({}, {'todoTask': 1})
     return doc['todoTask'] if doc and 'todoTask' in doc else []
 
-@decForTime
+@decForTime()
 def update_task():
     """Update task by number"""
     tasks = get_all_tasks()
@@ -71,7 +74,7 @@ def update_task():
     except:
         print("❌ Invalid input!")
 
-@decForTime
+@decForTime()
 def delete_task():
     """Delete task by number"""
     tasks = get_all_tasks()
@@ -91,7 +94,7 @@ def delete_task():
     except:
         print("❌ Invalid input!")
 
-@decForTime
+@decForTime()
 def clear_all():
     """Delete all tasks"""
     todos.update_one({}, {'$set': {'todoTask': []}})
