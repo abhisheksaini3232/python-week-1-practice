@@ -125,7 +125,7 @@ def main_menu():
         elif choice == '5':
             todoList1.clear_all()
         elif choice == '0':
-            print("👋 Goodbye!")
+            print("Goodbye!")
             break
         else:
             print("❌ Invalid option!")
