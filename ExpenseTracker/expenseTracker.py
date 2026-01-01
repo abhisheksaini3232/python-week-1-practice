@@ -38,11 +38,8 @@ class DailyExpenseTracker:
 
 monday=DailyExpenseTracker()
 
-monday.addExpense()
-monday.totalExpense()
-monday.saveToFile()
-monday.readFile()
+Options=input("1.Add Expense\n 2.Save in File\n 3. Read Expense\n 4. Show total Exense\n 5.Exit")
 
 
 
-
+#  Do we need to setup another function to calculate the total if we have multiple dictionaries in the file. And Do we need the save the Expense Dictionary before to calculate the total
