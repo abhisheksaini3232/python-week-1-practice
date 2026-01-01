@@ -35,7 +35,6 @@ class DailyExpenseTracker:
     print(fileText)
 
 
-
 monday=DailyExpenseTracker()
 
 Options=input("1.Add Expense\n 2.Save in File\n 3. Read Expense\n 4. Show total Exense\n 5.Exit")
