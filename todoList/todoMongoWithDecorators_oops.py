@@ -31,7 +31,7 @@ class TodoList:
     def add_task(self,task_name):
         """Add new task to todoTask array"""
         self.todos.update_one({}, {'$push': {'todoTask': task_name}}, upsert=True)
-        print(f"✅ Added: '{task_name}'")
+        print(f" Added: '{task_name}'")
 
     @decForTime(1)
     def list_tasks(self):
@@ -40,7 +40,7 @@ class TodoList:
         if not tasks:
             print("📭 No tasks!")
             return
-        print("\n📋 Your Tasks:")
+        print("\n Your Tasks:")
         for i, task in enumerate(tasks):
             print(f"  {i+1}. {task}")
 

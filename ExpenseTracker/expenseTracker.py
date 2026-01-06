@@ -7,37 +7,81 @@
 # Read expense history
 # Show total monthly expense
 
+import ast
+
 
 class DailyExpenseTracker:
-  def __init__(self):
-    self.Expense={}
-    
+    def __init__(self):
+        self.Expense = {}
+        self.file_name = "expenseTrackerFile.txt"
+        self._load_from_file()  
 
-  def addExpense(self):
-    name=input("Enter the name of the expense: ").capitalize()
-    amount=int(input("Enter the amount of expense: "))
-    self.Expense[name]=amount        
-    print(f"The expense of {amount} for {name} has been added")
+    def addExpense(self):
+        name = input("Enter the expense: ").capitalize()
+        amount = int(input("Enter the amount of expense: "))
+        if name in self.Expense:
+            self.Expense[name] += amount
+        else:
+            self.Expense[name] = amount
+        print(f"The expense of {amount} for {name} added")
 
-  def totalExpense(self):
-    total=sum(self.Expense.values())
-    print(f"The total expense is {total}")  
-  
-  def saveToFile(self):
-    f=open("expenseTrackerFile.txt", "a")
-    f.write(str(self.Expense))
-    print("The data has been saved to the file")
+    def totalExpense(self):
+        total = sum(self.Expense.values())
+        print(f"The total expense is {total}")
 
-  def readFile(self):
-    f=open("expenseTrackerFile.txt", "r")
-    fileText=f.read()
-    print("printing the file text now")
-    print(fileText)
+    def saveToFile(self):
+        with open(self.file_name, "w") as f:
+            f.write(str(self.Expense))
+        print("The data has been saved to the file")
+
+    def readFile(self):
+        try:
+            with open(self.file_name, "r") as f:
+                fileText = f.read()
+            if fileText: print(fileText)
+            else: print("Empty File")
+        except FileNotFoundError:
+            print("No file found or No expense")
+
+    def _load_from_file(self):
+        try:
+            with open(self.file_name, "r") as f:
+                content = f.read().strip()
+                if content:
+                    self.Expense = ast.literal_eval(content)
+        except FileNotFoundError:
+            self.Expense = {}
 
 
-monday=DailyExpenseTracker()
+def main():
+    monday = DailyExpenseTracker()
 
-Options=input("1.Add Expense\n 2.Save in File\n 3. Read Expense\n 4. Show total Exense\n 5.Exit")
+    while True:
+        print("\n1. Add Expense")
+        print("2. Save in File")
+        print("3. Read Expense")
+        print("4. Show Total Expense")
+        print("5. Exit")
+
+        option = input("Enter your option (1-5): ")
+
+        if option == "1":
+            monday.addExpense()
+        elif option == "2":
+            monday.saveToFile()
+        elif option == "3":
+            monday.readFile()
+        elif option == "4":
+            monday.totalExpense()
+        elif option == "5":
+            print("Exiting")
+            break
+        else:
+            print("Please choose between 1 to 5.")
+
+
+if __name__ == "__main__":
+    main()
 
 
 
