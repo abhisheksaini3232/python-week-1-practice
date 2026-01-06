@@ -27,11 +27,11 @@ class TodoList:
   
 
     # COMPLETE CRUD FUNCTIONS - SAME USE CASES AS PLAIN CODE
-    @decForTime(2)
+    # @decForTime(0)
     def add_task(self,task_name):
         """Add new task to todoTask array"""
         self.todos.update_one({}, {'$push': {'todoTask': task_name}}, upsert=True)
-        print(f"✅ Added: '{task_name}'")
+        print(f" Added: '{task_name}'")
 
     @decForTime(1)
     def list_tasks(self):
@@ -40,7 +40,7 @@ class TodoList:
         if not tasks:
             print("📭 No tasks!")
             return
-        print("\n📋 Your Tasks:")
+        print("\n Your Tasks:")
         for i, task in enumerate(tasks):
             print(f"  {i+1}. {task}")
 
@@ -55,7 +55,7 @@ class TodoList:
         """Update task by number"""
         tasks = TodoList.get_all_tasks()
         if not tasks:
-            print("📭 No tasks to update!")
+            print("No tasks to update!")
             return
         
         TodoList.list_tasks()
@@ -64,18 +64,18 @@ class TodoList:
             if 0 <= index < len(tasks):
                 new_task = input("Enter new task name: ")
                 todos.update_one({}, {'$set': {f'todoTask.{index}': new_task}})
-                print("✅ Task updated!")
+                print("Task updated!")
             else:
-                print("❌ Invalid number!")
+                print("Invalid number!")
         except:
-            print("❌ Invalid input!")
+            print("Invalid input!")
 
     @decForTime()
     def delete_task():
         """Delete task by number"""
         tasks = TodoList.get_all_tasks()
         if not tasks:
-            print("📭 No tasks to delete!")
+            print(" No tasks to delete!")
             return
         
         TodoList.list_tasks()
