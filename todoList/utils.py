@@ -1,99 +1,110 @@
 import pymongo
 import time
-from functools import wraps  
-connectionString = "mongodb+srv://manojsaini653733_db_user:7mUuKvsYRBkRICcF@cluster0.noljb9f.mongodb.net/?retryWrites=true&w=majority"
+from functools import wraps
+from pymongo.errors import PyMongoError, ConnectionFailure, ServerSelectionTimeoutError
+
+# MongoDB connection
+connectionString = "mongodb://localhost:27017/"
 client = pymongo.MongoClient(connectionString)
 db = client['projects']
 todos = db['todoList']
 
+def mongo_connection_check(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        try:
+            client = args[0].client  # self.client
+            client.admin.command('ping')
+            print("MongoDB connection OK")
+        except (ConnectionFailure, ServerSelectionTimeoutError, PyMongoError) as e:
+            print(f"MongoDB connection failed: {str(e)}")
+            return None
+        return func(*args, **kwargs)
+    return wrapper
 
 class TodoList:
     def __init__(self):
-        self.todos=db['todoList']
+        self.todos = db['todoList']
+        self.client = client  # Store client reference for ping
 
-    def decForTime(delay=0):  
-        def decorator(func):  
+    def decForTime(delay=0):
+        def decorator(func):
             @wraps(func)
-            def calcTimeofExec(*args, **kwargs):  
-                start=time.perf_counter()
-                if(delay>0):
+            def calcTimeofExec(*args, **kwargs):
+                start = time.perf_counter()
+                if delay > 0:
                     time.sleep(delay)
-                result = func(*args, **kwargs)  
-                end=time.perf_counter()
-                print(f"Time taken for execution of {func.__name__} {end-start}")
-                return result  
+                result = func(*args, **kwargs)
+                end = time.perf_counter()
+                print(f"Time taken for {func.__name__}: {end-start:.4f}s")
+                return result
             return calcTimeofExec
         return decorator
-  
 
-    # COMPLETE CRUD FUNCTIONS - SAME USE CASES AS PLAIN CODE
-    # @decForTime(0)
-    def add_task(self,task_name):
-        """Add new task to todoTask array"""
+    @mongo_connection_check
+    @decForTime(0)
+    def add_task(self, task_name):
         self.todos.update_one({}, {'$push': {'todoTask': task_name}}, upsert=True)
-        print(f" Added: '{task_name}'")
+        print(f"Added: '{task_name}'")
 
+    @mongo_connection_check
     @decForTime(1)
     def list_tasks(self):
-        """Show all tasks with numbers"""
         tasks = self.get_all_tasks()
         if not tasks:
-            print("📭 No tasks!")
+            print("No tasks!")
             return
-        print("\n Your Tasks:")
+        print("\nYour Tasks:")
         for i, task in enumerate(tasks):
             print(f"  {i+1}. {task}")
 
-
     def get_all_tasks(self):
-        """Get raw task list"""
         doc = self.todos.find_one({}, {'todoTask': 1})
         return doc['todoTask'] if doc and 'todoTask' in doc else []
 
-    @decForTime()
-    def update_task():
-        """Update task by number"""
-        tasks = TodoList.get_all_tasks()
+    @mongo_connection_check
+    @decForTime(0)
+    def update_task(self):
+        tasks = self.get_all_tasks()
         if not tasks:
             print("No tasks to update!")
             return
         
-        TodoList.list_tasks()
+        self.list_tasks()
         try:
             index = int(input("Enter task number to update: ")) - 1
             if 0 <= index < len(tasks):
                 new_task = input("Enter new task name: ")
-                todos.update_one({}, {'$set': {f'todoTask.{index}': new_task}})
+                self.todos.update_one({}, {'$set': {f'todoTask.{index}': new_task}})
                 print("Task updated!")
             else:
                 print("Invalid number!")
-        except:
-            print("Invalid input!")
+        except ValueError:
+            print("Invalid input! Enter numbers only.")
 
-    @decForTime()
-    def delete_task():
-        """Delete task by number"""
-        tasks = TodoList.get_all_tasks()
+    @mongo_connection_check
+    @decForTime(0)
+    def delete_task(self):
+        tasks = self.get_all_tasks()
         if not tasks:
-            print(" No tasks to delete!")
+            print("No tasks to delete!")
             return
         
-        TodoList.list_tasks()
+        self.list_tasks()
         try:
             index = int(input("Enter task number to delete: ")) - 1
             if 0 <= index < len(tasks):
                 task_name = tasks[index]
-                todos.update_one({}, {'$pull': {'todoTask': task_name}})
-                print("✅ Task deleted!")
+                self.todos.update_one({}, {'$pull': {'todoTask': task_name}})
+                print("Task deleted!")
             else:
-                print("❌ Invalid number!")
-        except:
-            print("❌ Invalid input!")
+                print("Invalid number!")
+        except ValueError:
+            print("Invalid input!")
 
-    @decForTime()
-    def clear_all():
-        """Delete all tasks"""
-        todos.update_one({}, {'$set': {'todoTask': []}})
-        print("All tasks cleared!")    
+    @mongo_connection_check
+    @decForTime(0)
+    def clear_all(self):
+        self.todos.update_one({}, {'$set': {'todoTask': []}})
+        print("All tasks cleared!")
 
-        
