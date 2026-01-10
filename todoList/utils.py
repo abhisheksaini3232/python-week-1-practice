@@ -1,5 +1,6 @@
 import pymongo
 import time
+from pymongo import MongoClient
 from functools import wraps
 from pymongo.errors import PyMongoError, ConnectionFailure, ServerSelectionTimeoutError
 
@@ -9,11 +10,12 @@ client = pymongo.MongoClient(connectionString)
 db = client['projects']
 todos = db['todoList']
 
-def mongo_connection_check(func):
+def mongo_connection_check(client):
+ def decorator(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         try:
-            client = args[0].client  # self.client
+            # client = args[0].client  # self.client
             client.admin.command('ping')
             print("MongoDB connection OK")
         except (ConnectionFailure, ServerSelectionTimeoutError, PyMongoError) as e:
@@ -21,11 +23,13 @@ def mongo_connection_check(func):
             return None
         return func(*args, **kwargs)
     return wrapper
+ return decorator
 
 class TodoList:
-    def __init__(self):
-        self.todos = db['todoList']
-        self.client = client  # Store client reference for ping
+    def __init__(self, connection_string="mongodb://localhost:27017/"):
+        self.client = MongoClient(connection_string)
+        self.todos = self.client.todo_db.todos
+
 
     def decForTime(delay=0):
         def decorator(func):
@@ -41,13 +45,13 @@ class TodoList:
             return calcTimeofExec
         return decorator
 
-    @mongo_connection_check
+    @mongo_connection_check(client)
     @decForTime(0)
     def add_task(self, task_name):
         self.todos.update_one({}, {'$push': {'todoTask': task_name}}, upsert=True)
         print(f"Added: '{task_name}'")
 
-    @mongo_connection_check
+    @mongo_connection_check(client)
     @decForTime(1)
     def list_tasks(self):
         tasks = self.get_all_tasks()
@@ -62,7 +66,7 @@ class TodoList:
         doc = self.todos.find_one({}, {'todoTask': 1})
         return doc['todoTask'] if doc and 'todoTask' in doc else []
 
-    @mongo_connection_check
+    @mongo_connection_check(client)
     @decForTime(0)
     def update_task(self):
         tasks = self.get_all_tasks()
@@ -82,7 +86,7 @@ class TodoList:
         except ValueError:
             print("Invalid input! Enter numbers only.")
 
-    @mongo_connection_check
+    @mongo_connection_check(client)
     @decForTime(0)
     def delete_task(self):
         tasks = self.get_all_tasks()
@@ -102,7 +106,7 @@ class TodoList:
         except ValueError:
             print("Invalid input!")
 
-    @mongo_connection_check
+    @mongo_connection_check(client)
     @decForTime(0)
     def clear_all(self):
         self.todos.update_one({}, {'$set': {'todoTask': []}})
